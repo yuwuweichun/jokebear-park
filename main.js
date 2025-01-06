@@ -51,6 +51,7 @@ renderer.toneMappingExposure = 1.7;
 
 // Some of our DOM elements, others are scattered in the file
 const modal = document.querySelector(".modal");
+const modalbgOverlay = document.querySelector(".modal-bg-overlay");
 const modalTitle = document.querySelector(".modal-title");
 const modalProjectDescription = document.querySelector(
   ".modal-project-description"
@@ -108,11 +109,13 @@ function showModal(id) {
       modalVisitProjectButton.classList.add("hidden");
     }
     modal.classList.toggle("hidden");
+    modalbgOverlay.classList.toggle("hidden");
   }
 }
 
 function hideModal() {
   modal.classList.toggle("hidden");
+  modalbgOverlay.classList.toggle("hidden");
 }
 
 // Our Intersecting objects
@@ -523,6 +526,7 @@ downArrow.addEventListener("touchstart", (e) => {
 
 // Adding Event Listeners (tbh could make some of these just themselves rather than seperating them, oh well)
 modalExitButton.addEventListener("click", hideModal);
+modalbgOverlay.addEventListener("click", hideModal);
 themeToggleButton.addEventListener("click", toggleTheme);
 window.addEventListener("resize", onResize);
 window.addEventListener("click", onClick);

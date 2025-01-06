@@ -60,6 +60,17 @@
 }
 
 /* Modal */
+.modal-bg-overlay {
+  z-index: 750;
+  height: 100%;
+  width: 100%;
+  background-color: #31313159;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+}
+
 .modal {
   z-index: 999;
   position: absolute;
@@ -142,7 +153,7 @@
 /* Mobile controls */
 
 .mobile-control {
-  z-index: 999;
+  z-index: 500;
   position: absolute;
   top: 85%;
   left: 50%;
@@ -178,7 +189,7 @@
 
 /* Toggle Button */
 .theme-mode-toggle-button {
-  z-index: 999;
+  z-index: 500a;
   position: absolute;
   top: 32px;
   right: 32px;
