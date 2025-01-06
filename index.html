@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bella's Park</title>
+
+    <link
+      rel="icon"
+      type="image/png"
+      href="./media/favicon-96x96.png"
+      sizes="96x96"
+    />
+    <link rel="icon" type="image/svg+xml" href="./media/favicon.svg" />
+    <link rel="shortcut icon" href="./media/favicon.ico" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="./media/apple-touch-icon.png"
+    />
+    <meta name="language" content="English" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/media/og-image.webp" />
+    <link rel="manifest" href="./media/site.webmanifest" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap"
+      rel="stylesheet"
+    />
+    <meta
+      property="og:description"
+      content="Hiii!!!! My name is Bella and this is my super cool folio!! Learn all about me and what I love to do!"
+    />
+    <meta
+      name="description"
+      content="Hiii!!!! My name is Bella and this is my super cool folio!! Learn all about me and what I love to do!"
+    />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body class="light-theme">
+    <div id="experience">
+      <canvas id="experience-canvas"></canvas>
+    </div>
+
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+      <div class="loading-text">Loading...</div>
+    </div>
+
+    <!-- Theme Toggle -->
+    <div class="theme-mode-toggle-button">
+      <svg
+        width="80"
+        height="80"
+        viewBox="0 0 80 80"
+        class="first-icon"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect x="25" y="25" width="30" height="30" fill="white" />
+        <rect
+          width="4"
+          height="19"
+          transform="matrix(-1 0 0 1 42 0)"
+          fill="white"
+        />
+        <rect
+          width="4"
+          height="19"
+          transform="matrix(-1 0 0 1 42 61)"
+          fill="white"
+        />
+        <rect
+          width="4"
+          height="19"
+          transform="matrix(0 -1 -1 0 80 42)"
+          fill="white"
+        />
+        <rect
+          width="4"
+          height="14"
+          transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 18.8994 22.728)"
+          fill="white"
+        />
+        <rect
+          width="4"
+          height="14"
+          transform="matrix(0.719888 0.69409 -0.719888 0.69409 19.0786 59.0491)"
+          fill="white"
+        />
+        <rect
+          width="4"
+          height="14"
+          transform="matrix(0.707107 0.707107 0.707107 -0.707107 58 19.8994)"
+          fill="white"
+        />
+        <rect
+          width="4"
+          height="14"
+          transform="matrix(0.719888 -0.69409 0.719888 0.69409 58.1792 61.7764)"
+          fill="white"
+        />
+        <rect
+          width="4"
+          height="19"
+          transform="matrix(0 -1 -1 0 19 42)"
+          fill="white"
+        />
+      </svg>
+
+      <svg
+        width="46"
+        height="46"
+        viewBox="0 0 46 46"
+        class="second-icon"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M26.8333 0H46V46H0V26.8333H26.8333V0ZM34 12H41.6667V19.6667H34V12ZM33.2222 26.8333H40.8889V34.5H33.2222V26.8333ZM23 33.2222H15.3333V40.8889H23V33.2222Z"
+          fill="white"
+        />
+      </svg>
+    </div>
+
+    <!-- Pop-up Modals -->
+    <div class="modal hidden">
+      <div class="modal-wrapper">
+        <div class="modal-header">
+          <h1 class="modal-title">Project One</h1>
+          <button class="modal-exit-button">exit</button>
+        </div>
+        <div class="modal-content">
+          <div class="modal-content-wrapper">
+            <p class="modal-project-description">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi
+              ipsa pariatur porro ipsam, labore sequi. Facere recusandae
+              quisquam error corrupti reiciendis officia sunt molestiae
+              dignissimos, quae doloremque, voluptatem quam voluptates! Nam,
+              eum, voluptatibus laboriosam nobis illo rem, esse maxime mollitia
+              voluptate minima in libero cum labore! Pariatur, perferendis enim?
+              Atque hic in optio dolorem cum, quos sint voluptate quidem
+              debitis? Iusto quibusdam voluptate nihil architecto laborum
+              officia suscipit numquam non ea expedita ipsum atque nostrum amet
+              alias, excepturi vel saepe harum animi nobis, doloribus sint
+              corporis fugiat ratione! Temporibus, nostrum? Ducimus ipsum
+              nesciunt quam eum qui minima voluptatibus eaque aspernatur,
+              laboriosam tenetur nisi inventore labore obcaecati assumenda sed
+              ipsa autem nostrum est repudiandae. Possimus sunt totam quidem.
+              Dolorum, aliquid eveniet?
+            </p>
+
+            <a
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="modal-project-visit-button hidden"
+              >View Project</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile controls -->
+    <div class="mobile-control up-arrow">
+      <svg
+        width="45"
+        height="34"
+        viewBox="0 0 45 34"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect
+          x="11.7988"
+          y="17.072"
+          width="5.64259"
+          height="20.7622"
+          transform="rotate(-90 11.7988 17.072)"
+          fill="#FEFEFE"
+        />
+        <rect
+          x="7.68359"
+          y="22.7148"
+          width="5.64259"
+          height="28.811"
+          transform="rotate(-90 7.68359 22.7148)"
+          fill="#FEFEFE"
+        />
+        <rect
+          x="3.93311"
+          y="28.3574"
+          width="5.64259"
+          height="37.0427"
+          transform="rotate(-90 3.93311 28.3574)"
+          fill="#FEFEFE"
+        />
+        <rect
+          y="34"
+          width="5.64259"
+          height="45"
+          transform="rotate(-90 0 34)"
+          fill="#FEFEFE"
+        />
+        <rect
+          x="15.5488"
+          y="11.4297"
+          width="5.64259"
+          height="13.3537"
+          transform="rotate(-90 15.5488 11.4297)"
+          fill="#FEFEFE"
+        />
+        <rect
+          x="19.0244"
+          y="5.78711"
+          width="5.64259"
+          height="6.31098"
+          transform="rotate(-90 19.0244 5.78711)"
+          fill="#FEFEFE"
+        />
+      </svg>
+    </div>
+
+    <div class="mobile-control left-arrow">
+      <svg
+        width="45"
+        height="34"
+        viewBox="0 0 45 34"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect
+          x="11.7988"
+          y="17.072"
+          width="5.64259"
+          height="20.7622"
+          transform="rotate(-90 11.7988 17.072)"
+          fill="#FEFEFE"
+        />
+        <rect
+          x="7.68359"
+          y="22.7148"
+          width="5.64259"
+          height="28.811"
+          transform="rotate(-90 7.68359 22.7148)"
+          fill="#FEFEFE"
+        />
+        <rect
+          x="3.93311"
+          y="28.3574"
+          width="5.64259"
+          height="37.0427"
+          transform="rotate(-90 3.93311 28.3574)"
+          fill="#FEFEFE"
+        />
+        <rect
+          y="34"
+          width="5.64259"
+          height="45"
+          transform="rotate(-90 0 34)"
+          fill="#FEFEFE"
+        />
+        <rect
+          x="15.5488"
+          y="11.4297"
+          width="5.64259"
+          height="13.3537"
+          transform="rotate(-90 15.5488 11.4297)"
+          fill="#FEFEFE"
+        />
+        <rect
+          x="19.0244"
+          y="5.78711"
+          width="5.64259"
+          height="6.31098"
+          transform="rotate(-90 19.0244 5.78711)"
+          fill="#FEFEFE"
+        />
+      </svg>
+    </div>
+    <div class="mobile-control right-arrow">
+      <svg
+        width="45"
+        height="34"
+        viewBox="0 0 45 34"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect
+          x="11.7988"
+          y="17.072"
+          width="5.64259"
+          height="20.7622"
+          transform="rotate(-90 11.7988 17.072)"
+          fill="#FEFEFE"
+        />
+        <rect
+          x="7.68359"
+          y="22.7148"
+          width="5.64259"
+          height="28.811"
+          transform="rotate(-90 7.68359 22.7148)"
+          fill="#FEFEFE"
+        />
+        <rect
+          x="3.93311"
+          y="28.3574"
+          width="5.64259"
+          height="37.0427"
+          transform="rotate(-90 3.93311 28.3574)"
+          fill="#FEFEFE"
+        />
+        <rect
+          y="34"
+          width="5.64259"
+          height="45"
+          transform="rotate(-90 0 34)"
+          fill="#FEFEFE"
+        />
+        <rect
+          x="15.5488"
+          y="11.4297"
+          width="5.64259"
+          height="13.3537"
+          transform="rotate(-90 15.5488 11.4297)"
+          fill="#FEFEFE"
+        />
+        <rect
+          x="19.0244"
+          y="5.78711"
+          width="5.64259"
+          height="6.31098"
+          transform="rotate(-90 19.0244 5.78711)"
+          fill="#FEFEFE"
+        />
+      </svg>
+    </div>
+
+    <div class="mobile-control down-arrow">
+      <svg
+        width="45"
+        height="34"
+        viewBox="0 0 45 34"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect
+          x="11.7988"
+          y="17.072"
+          width="5.64259"
+          height="20.7622"
+          transform="rotate(-90 11.7988 17.072)"
+          fill="#FEFEFE"
+        />
+        <rect
+          x="7.68359"
+          y="22.7148"
+          width="5.64259"
+          height="28.811"
+          transform="rotate(-90 7.68359 22.7148)"
+          fill="#FEFEFE"
+        />
+        <rect
+          x="3.93311"
+          y="28.3574"
+          width="5.64259"
+          height="37.0427"
+          transform="rotate(-90 3.93311 28.3574)"
+          fill="#FEFEFE"
+        />
+        <rect
+          y="34"
+          width="5.64259"
+          height="45"
+          transform="rotate(-90 0 34)"
+          fill="#FEFEFE"
+        />
+        <rect
+          x="15.5488"
+          y="11.4297"
+          width="5.64259"
+          height="13.3537"
+          transform="rotate(-90 15.5488 11.4297)"
+          fill="#FEFEFE"
+        />
+        <rect
+          x="19.0244"
+          y="5.78711"
+          width="5.64259"
+          height="6.31098"
+          transform="rotate(-90 19.0244 5.78711)"
+          fill="#FEFEFE"
+        />
+      </svg>
+    </div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@v0.149.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@v0.149.0/examples/jsm/"
+        }
+      }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>
