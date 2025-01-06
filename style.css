@@ -144,7 +144,7 @@
 .mobile-control {
   z-index: 999;
   position: absolute;
-  top: 80%;
+  top: 85%;
   left: 50%;
   cursor: pointer;
   transform: translate(-50%, -50%);
