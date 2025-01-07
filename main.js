@@ -470,10 +470,48 @@ function toggleTheme() {
 }
 
 // Mobile controls
-const upArrow = document.querySelector(".mobile-control.up-arrow");
-const leftArrow = document.querySelector(".mobile-control.left-arrow");
-const rightArrow = document.querySelector(".mobile-control.right-arrow");
-const downArrow = document.querySelector(".mobile-control.down-arrow");
+const mobileControls = {
+  up: document.querySelector(".mobile-control.up-arrow"),
+  left: document.querySelector(".mobile-control.left-arrow"),
+  right: document.querySelector(".mobile-control.right-arrow"),
+  down: document.querySelector(".mobile-control.down-arrow"),
+};
+
+const pressedButtons = {
+  up: false,
+  left: false,
+  right: false,
+  down: false,
+};
+
+function handleContinuousMovement() {
+  if (!character.instance) return;
+
+  if (
+    Object.values(pressedButtons).some((pressed) => pressed) &&
+    !character.isMoving
+  ) {
+    if (pressedButtons.up) {
+      playerVelocity.z += MOVE_SPEED;
+      targetRotation = 0;
+    }
+    if (pressedButtons.down) {
+      playerVelocity.z -= MOVE_SPEED;
+      targetRotation = Math.PI;
+    }
+    if (pressedButtons.left) {
+      playerVelocity.x += MOVE_SPEED;
+      targetRotation = Math.PI / 2;
+    }
+    if (pressedButtons.right) {
+      playerVelocity.x -= MOVE_SPEED;
+      targetRotation = -Math.PI / 2;
+    }
+
+    playerVelocity.y = JUMP_HEIGHT;
+    character.isMoving = true;
+  }
+}
 
 function handleMobileControl(direction) {
   if (character.isMoving) return;
@@ -502,28 +540,41 @@ function handleMobileControl(direction) {
   character.isMoving = true;
 }
 
-upArrow.addEventListener("click", () => handleMobileControl("up"));
-leftArrow.addEventListener("click", () => handleMobileControl("left"));
-rightArrow.addEventListener("click", () => handleMobileControl("right"));
-downArrow.addEventListener("click", () => handleMobileControl("down"));
+Object.entries(mobileControls).forEach(([direction, element]) => {
+  element.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    pressedButtons[direction] = true;
+  });
 
-upArrow.addEventListener("touchstart", (e) => {
-  e.preventDefault();
-  handleMobileControl("up");
-});
-leftArrow.addEventListener("touchstart", (e) => {
-  e.preventDefault();
-  handleMobileControl("left");
-});
-rightArrow.addEventListener("touchstart", (e) => {
-  e.preventDefault();
-  handleMobileControl("right");
-});
-downArrow.addEventListener("touchstart", (e) => {
-  e.preventDefault();
-  handleMobileControl("down");
+  element.addEventListener("touchend", (e) => {
+    e.preventDefault();
+    pressedButtons[direction] = false;
+  });
+
+  element.addEventListener("mousedown", (e) => {
+    e.preventDefault();
+    pressedButtons[direction] = true;
+  });
+
+  element.addEventListener("mouseup", (e) => {
+    e.preventDefault();
+    pressedButtons[direction] = false;
+  });
+
+  element.addEventListener("mouseleave", (e) => {
+    pressedButtons[direction] = false;
+  });
+
+  element.addEventListener("touchcancel", (e) => {
+    pressedButtons[direction] = false;
+  });
 });
 
+window.addEventListener("blur", () => {
+  Object.keys(pressedButtons).forEach((key) => {
+    pressedButtons[key] = false;
+  });
+});
 // Adding Event Listeners (tbh could make some of these just themselves rather than seperating them, oh well)
 modalExitButton.addEventListener("click", hideModal);
 modalbgOverlay.addEventListener("click", hideModal);
@@ -536,6 +587,7 @@ window.addEventListener("keydown", onKeyDown);
 // Like our movie strip!!! Calls on each frame.
 function animate() {
   updatePlayer();
+  handleContinuousMovement();
 
   if (character.instance) {
     const targetCameraPosition = new THREE.Vector3(
