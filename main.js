@@ -4,6 +4,23 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { Octree } from "three/addons/math/Octree.js";
 import { Capsule } from "three/addons/math/Capsule.js";
 
+//Audio
+const backgroundMusic = new Audio("./sfx/music.ogg");
+backgroundMusic.loop = true;
+backgroundMusic.volume = 0.3;
+
+const projectsSFX = new Audio("./sfx/projects.ogg");
+projectsSFX.volume = 0.5;
+
+const pokemonSFX = new Audio("./sfx/pokemon.ogg");
+pokemonSFX.volume = 0.5;
+
+const jumpSFX = new Audio("./sfx/jumpsfx.ogg");
+jumpSFX.volume = 1;
+
+let isMuted = false;
+
+//three.js setup
 const scene = new THREE.Scene();
 const canvas = document.getElementById("experience-canvas");
 const sizes = {
@@ -64,6 +81,10 @@ const themeToggleButton = document.querySelector(".theme-mode-toggle-button");
 const firstIcon = document.querySelector(".first-icon");
 const secondIcon = document.querySelector(".second-icon");
 
+const audioToggleButton = document.querySelector(".audio-toggle-button");
+const firstIconTwo = document.querySelector(".first-icon-two");
+const secondIconTwo = document.querySelector(".second-icon-two");
+
 // Modal stuff
 const modalContent = {
   Project_1: {
@@ -116,6 +137,9 @@ function showModal(id) {
 function hideModal() {
   modal.classList.toggle("hidden");
   modalbgOverlay.classList.toggle("hidden");
+  if (!isMuted) {
+    projectsSFX.play();
+  }
 }
 
 // Our Intersecting objects
@@ -141,17 +165,46 @@ const intersectObjectsNames = [
 // Loading screen and loading manager
 // See: https://threejs.org/docs/#api/en/loaders/managers/LoadingManager
 const loadingScreen = document.getElementById("loadingScreen");
+const loadingText = document.querySelector(".loading-text");
+const enterButton = document.querySelector(".enter-button");
+const instructions = document.querySelector(".instructions");
+
 const manager = new THREE.LoadingManager();
 
 manager.onLoad = function () {
+  const t1 = gsap.timeline();
+
+  t1.to(loadingText, {
+    opacity: 0,
+    duration: 0,
+  });
+
+  t1.to(enterButton, {
+    opacity: 1,
+    duration: 0,
+  });
+};
+
+enterButton.addEventListener("click", () => {
   gsap.to(loadingScreen, {
     opacity: 0,
-    duration: 0.5,
+    duration: 0,
+  });
+  gsap.to(instructions, {
+    opacity: 0,
+    duration: 0,
     onComplete: () => {
       loadingScreen.remove();
     },
   });
-};
+
+  if (!isMuted) {
+    projectsSFX.play();
+    backgroundMusic.play();
+  }
+});
+
+//Audio
 
 // GLTF Loader
 // See: https://threejs.org/docs/?q=glt#examples/en/loaders/GLTFLoader
@@ -197,16 +250,23 @@ loader.load(
 // See: https://threejs.org/docs/?q=light#api/en/lights/AmbientLight
 const sun = new THREE.DirectionalLight(0xffffff);
 sun.castShadow = true;
-sun.position.set(75, 80, -30);
-sun.target.position.set(50, 0, 0);
-sun.shadow.mapSize.width = 2048;
-sun.shadow.mapSize.height = 2048;
-sun.shadow.camera.left = -100;
+sun.position.set(280, 200, -30);
+sun.target.position.set(100, 0, 10);
+sun.shadow.mapSize.width = 4096;
+sun.shadow.mapSize.height = 4096;
+sun.shadow.camera.left = -150;
 sun.shadow.camera.right = 100;
-sun.shadow.camera.top = 100;
+sun.shadow.camera.top = 150;
 sun.shadow.camera.bottom = -100;
 sun.shadow.normalBias = 0.2;
+scene.add(sun.target);
 scene.add(sun);
+
+// const shadowCameraHelper = new THREE.CameraHelper(sun.shadow.camera);
+// scene.add(shadowCameraHelper);
+
+// const sunHelper = new THREE.CameraHelper(sun);
+// scene.add(sunHelper);
 
 const light = new THREE.AmbientLight(0x404040, 2.7);
 scene.add(light);
@@ -228,8 +288,12 @@ camera.position.y = 39;
 camera.position.z = -67;
 
 const cameraOffset = new THREE.Vector3(-13, 39, -67);
+
 camera.zoom = 2.2;
 camera.updateProjectionMatrix();
+
+const controls = new OrbitControls(camera, canvas);
+controls.update();
 
 // Handle when window resizes
 function onResize() {
@@ -248,7 +312,11 @@ function onResize() {
 
 // Interact with Objects and Raycaster
 // See: https://threejs.org/docs/?q=raycas#api/en/core/Raycaster
+let isCharacterReady = true;
+
 function jumpCharacter(meshID) {
+  if (!isCharacterReady) return;
+
   const mesh = scene.getObjectByName(meshID);
   const jumpHeight = 2;
   const jumpDuration = 0.5;
@@ -302,6 +370,9 @@ function jumpCharacter(meshID) {
       y: mesh.position.y,
       duration: jumpDuration * 0.5,
       ease: "bounce.out",
+      onComplete: () => {
+        isCharacterReady = true;
+      },
     },
     ">"
   );
@@ -329,9 +400,18 @@ function onClick() {
         "Snorlax",
       ].includes(intersectObject)
     ) {
-      jumpCharacter(intersectObject);
+      if (isCharacterReady) {
+        if (!isMuted) {
+          pokemonSFX.play();
+        }
+        jumpCharacter(intersectObject);
+        isCharacterReady = false;
+      }
     } else {
       showModal(intersectObject);
+      if (!isMuted) {
+        projectsSFX.play();
+      }
     }
   }
 }
@@ -469,6 +549,9 @@ function onKeyUp(event) {
 
 // Toggle Theme Function
 function toggleTheme() {
+  if (!isMuted) {
+    projectsSFX.play();
+  }
   const isDarkTheme = document.body.classList.contains("dark-theme");
   document.body.classList.toggle("dark-theme");
   document.body.classList.toggle("light-theme");
@@ -510,6 +593,24 @@ function toggleTheme() {
   });
 }
 
+// Toggle Audio Function
+function toggleAudio() {
+  if (!isMuted) {
+    projectsSFX.play();
+  }
+  if (firstIconTwo.style.display === "none") {
+    firstIconTwo.style.display = "block";
+    secondIconTwo.style.display = "none";
+    isMuted = false;
+    backgroundMusic.play();
+  } else {
+    firstIconTwo.style.display = "none";
+    secondIconTwo.style.display = "block";
+    isMuted = true;
+    backgroundMusic.pause();
+  }
+}
+
 // Mobile controls
 const mobileControls = {
   up: document.querySelector(".mobile-control.up-arrow"),
@@ -525,6 +626,65 @@ const pressedButtons = {
   down: false,
 };
 
+function handleJumpAnimation() {
+  if (!character.instance || !character.isMoving) return;
+
+  const jumpDuration = 0.5;
+  const jumpHeight = 2;
+
+  const t1 = gsap.timeline();
+
+  t1.to(character.instance.scale, {
+    x: 1.08,
+    y: 0.9,
+    z: 1.08,
+    duration: jumpDuration * 0.2,
+    ease: "power2.out",
+  });
+
+  t1.to(character.instance.scale, {
+    x: 0.92,
+    y: 1.1,
+    z: 0.92,
+    duration: jumpDuration * 0.3,
+    ease: "power2.out",
+  });
+
+  t1.to(
+    character.instance.position,
+    {
+      y: character.instance.position.y + jumpHeight,
+      duration: jumpDuration * 0.5,
+      ease: "power2.out",
+    },
+    "<"
+  );
+
+  t1.to(character.instance.scale, {
+    x: 1,
+    y: 1,
+    z: 1,
+    duration: jumpDuration * 0.3,
+    ease: "power1.inOut",
+  });
+
+  t1.to(
+    character.instance.position,
+    {
+      y: character.instance.position.y,
+      duration: jumpDuration * 0.5,
+    },
+    ">"
+  );
+
+  t1.to(character.instance.scale, {
+    x: 1,
+    y: 1,
+    z: 1,
+    duration: jumpDuration * 0.2,
+  });
+}
+
 function handleContinuousMovement() {
   if (!character.instance) return;
 
@@ -532,6 +692,9 @@ function handleContinuousMovement() {
     Object.values(pressedButtons).some((pressed) => pressed) &&
     !character.isMoving
   ) {
+    if (!isMuted) {
+      jumpSFX.play();
+    }
     if (pressedButtons.up) {
       playerVelocity.z += MOVE_SPEED;
       targetRotation = 0;
@@ -551,6 +714,7 @@ function handleContinuousMovement() {
 
     playerVelocity.y = JUMP_HEIGHT;
     character.isMoving = true;
+    handleJumpAnimation();
   }
 }
 
@@ -589,10 +753,12 @@ window.addEventListener("blur", () => {
     pressedButtons[key] = false;
   });
 });
+
 // Adding Event Listeners (tbh could make some of these just themselves rather than seperating them, oh well)
 modalExitButton.addEventListener("click", hideModal);
 modalbgOverlay.addEventListener("click", hideModal);
 themeToggleButton.addEventListener("click", toggleTheme);
+audioToggleButton.addEventListener("click", toggleAudio);
 window.addEventListener("resize", onResize);
 window.addEventListener("click", onClick);
 window.addEventListener("mousemove", onMouseMove);
