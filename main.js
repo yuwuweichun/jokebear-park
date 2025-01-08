@@ -133,8 +133,9 @@ const intersectObjectsNames = [
   "Chicken",
   "Pikachu",
   "Bulbasaur",
-  "Chest",
   "Charmander",
+  "Snorlax",
+  "Chest",
 ];
 
 // Loading screen and loading manager
@@ -251,21 +252,28 @@ function jumpCharacter(meshID) {
   const mesh = scene.getObjectByName(meshID);
   const jumpHeight = 2;
   const jumpDuration = 0.5;
+  const isSnorlax = meshID === "Snorlax";
+
+  const currentScale = {
+    x: mesh.scale.x,
+    y: mesh.scale.y,
+    z: mesh.scale.z,
+  };
 
   const t1 = gsap.timeline();
 
   t1.to(mesh.scale, {
-    x: 1.2,
-    y: 0.8,
-    z: 1.2,
+    x: isSnorlax ? currentScale.x * 1.2 : 1.2,
+    y: isSnorlax ? currentScale.y * 0.8 : 0.8,
+    z: isSnorlax ? currentScale.z * 1.2 : 1.2,
     duration: jumpDuration * 0.2,
     ease: "power2.out",
   });
 
   t1.to(mesh.scale, {
-    x: 0.8,
-    y: 1.3,
-    z: 0.8,
+    x: isSnorlax ? currentScale.x * 0.8 : 0.8,
+    y: isSnorlax ? currentScale.y * 1.3 : 1.3,
+    z: isSnorlax ? currentScale.z * 0.8 : 0.8,
     duration: jumpDuration * 0.3,
     ease: "power2.out",
   });
@@ -281,9 +289,9 @@ function jumpCharacter(meshID) {
   );
 
   t1.to(mesh.scale, {
-    x: 1,
-    y: 1,
-    z: 1,
+    x: isSnorlax ? currentScale.x * 1.2 : 1,
+    y: isSnorlax ? currentScale.y * 1.2 : 1,
+    z: isSnorlax ? currentScale.z * 1.2 : 1,
     duration: jumpDuration * 0.3,
     ease: "power1.inOut",
   });
@@ -298,21 +306,28 @@ function jumpCharacter(meshID) {
     ">"
   );
 
-  t1.to(mesh.scale, {
-    x: 1,
-    y: 1,
-    z: 1,
-    duration: jumpDuration * 0.2,
-    ease: "elastic.out(1, 0.3)",
-  });
+  if (!isSnorlax) {
+    t1.to(mesh.scale, {
+      x: 1,
+      y: 1,
+      z: 1,
+      duration: jumpDuration * 0.2,
+      ease: "elastic.out(1, 0.3)",
+    });
+  }
 }
 
 function onClick() {
   if (intersectObject !== "") {
     if (
-      ["Bulbasaur", "Chicken", "Pikachu", "Charmander", "Squirtle"].includes(
-        intersectObject
-      )
+      [
+        "Bulbasaur",
+        "Chicken",
+        "Pikachu",
+        "Charmander",
+        "Squirtle",
+        "Snorlax",
+      ].includes(intersectObject)
     ) {
       jumpCharacter(intersectObject);
     } else {
@@ -321,9 +336,24 @@ function onClick() {
   }
 }
 
-function onPointerMove(event) {
+function onMouseMove(event) {
   pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
   pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+}
+
+function onTouchStart(event) {
+  const touch = event.touches[0];
+  updatePointer(touch);
+}
+
+function onTouchMove(event) {
+  const touch = event.touches[0];
+  updatePointer(touch);
+}
+
+function updatePointer(touch) {
+  pointer.x = (touch.clientX / window.innerWidth) * 2 - 1;
+  pointer.y = -(touch.clientY / window.innerHeight) * 2 + 1;
 }
 
 // Movement and Gameplay functions
@@ -391,39 +421,50 @@ function updatePlayer() {
 }
 
 function onKeyDown(event) {
-  if (event.key.toLowerCase() === "r") {
+  if (event.code.toLowerCase() === "keyr") {
     respawnCharacter();
     return;
   }
 
-  if (character.isMoving) return;
-
-  switch (event.key.toLowerCase()) {
-    case "w":
+  switch (event.code.toLowerCase()) {
+    case "keyw":
     case "arrowup":
-      playerVelocity.z += MOVE_SPEED;
-      targetRotation = 0;
+      pressedButtons.up = true;
       break;
-    case "s":
+    case "keys":
     case "arrowdown":
-      playerVelocity.z -= MOVE_SPEED;
-      targetRotation = Math.PI;
+      pressedButtons.down = true;
       break;
-    case "a":
+    case "keya":
     case "arrowleft":
-      playerVelocity.x += MOVE_SPEED;
-      targetRotation = Math.PI / 2;
+      pressedButtons.left = true;
       break;
-    case "d":
+    case "keyd":
     case "arrowright":
-      playerVelocity.x -= MOVE_SPEED;
-      targetRotation = -Math.PI / 2;
+      pressedButtons.right = true;
       break;
-    default:
-      return;
   }
-  playerVelocity.y = JUMP_HEIGHT;
-  character.isMoving = true;
+}
+
+function onKeyUp(event) {
+  switch (event.code.toLowerCase()) {
+    case "keyw":
+    case "arrowup":
+      pressedButtons.up = false;
+      break;
+    case "keys":
+    case "arrowdown":
+      pressedButtons.down = false;
+      break;
+    case "keya":
+    case "arrowleft":
+      pressedButtons.left = false;
+      break;
+    case "keyd":
+    case "arrowright":
+      pressedButtons.right = false;
+      break;
+  }
 }
 
 // Toggle Theme Function
@@ -513,33 +554,6 @@ function handleContinuousMovement() {
   }
 }
 
-function handleMobileControl(direction) {
-  if (character.isMoving) return;
-
-  switch (direction) {
-    case "up":
-      playerVelocity.z += MOVE_SPEED;
-      targetRotation = 0;
-      break;
-    case "down":
-      playerVelocity.z -= MOVE_SPEED;
-      targetRotation = Math.PI;
-      break;
-    case "left":
-      playerVelocity.x += MOVE_SPEED;
-      targetRotation = Math.PI / 2;
-      break;
-    case "right":
-      playerVelocity.x -= MOVE_SPEED;
-      targetRotation = -Math.PI / 2;
-      break;
-    default:
-      return;
-  }
-  playerVelocity.y = JUMP_HEIGHT;
-  character.isMoving = true;
-}
-
 Object.entries(mobileControls).forEach(([direction, element]) => {
   element.addEventListener("touchstart", (e) => {
     e.preventDefault();
@@ -581,8 +595,11 @@ modalbgOverlay.addEventListener("click", hideModal);
 themeToggleButton.addEventListener("click", toggleTheme);
 window.addEventListener("resize", onResize);
 window.addEventListener("click", onClick);
-window.addEventListener("pointermove", onPointerMove);
+window.addEventListener("mousemove", onMouseMove);
+window.addEventListener("touchmove", onTouchMove);
+window.addEventListener("touchstart", onTouchStart);
 window.addEventListener("keydown", onKeyDown);
+window.addEventListener("keyup", onKeyUp);
 
 // Like our movie strip!!! Calls on each frame.
 function animate() {
