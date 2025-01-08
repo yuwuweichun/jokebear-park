@@ -424,6 +424,7 @@ function onMouseMove(event) {
 function onTouchStart(event) {
   const touch = event.touches[0];
   updatePointer(touch);
+  checkIntersection();
 }
 
 function onTouchMove(event) {
@@ -434,6 +435,18 @@ function onTouchMove(event) {
 function updatePointer(touch) {
   pointer.x = (touch.clientX / window.innerWidth) * 2 - 1;
   pointer.y = -(touch.clientY / window.innerHeight) * 2 + 1;
+}
+
+function checkIntersection() {
+  raycaster.setFromCamera(pointer, camera);
+  const intersects = raycaster.intersectObjects(intersectObjects);
+
+  if (intersects.length > 0) {
+    intersectObject = intersects[0].object.parent.name;
+    onClick();
+  } else {
+    intersectObject = "";
+  }
 }
 
 // Movement and Gameplay functions
