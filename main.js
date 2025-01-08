@@ -650,16 +650,6 @@ function handleJumpAnimation() {
     ease: "power2.out",
   });
 
-  t1.to(
-    character.instance.position,
-    {
-      y: character.instance.position.y + jumpHeight,
-      duration: jumpDuration * 0.5,
-      ease: "power2.out",
-    },
-    "<"
-  );
-
   t1.to(character.instance.scale, {
     x: 1,
     y: 1,
@@ -667,15 +657,6 @@ function handleJumpAnimation() {
     duration: jumpDuration * 0.3,
     ease: "power1.inOut",
   });
-
-  t1.to(
-    character.instance.position,
-    {
-      y: character.instance.position.y,
-      duration: jumpDuration * 0.5,
-    },
-    ">"
-  );
 
   t1.to(character.instance.scale, {
     x: 1,
