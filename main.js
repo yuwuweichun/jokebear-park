@@ -129,14 +129,14 @@ function showModal(id) {
     } else {
       modalVisitProjectButton.classList.add("hidden");
     }
-    modal.classList.toggle("hidden");
-    modalbgOverlay.classList.toggle("hidden");
+    modal.classList.remove("hidden");
+    modalbgOverlay.classList.remove("hidden");
   }
 }
 
 function hideModal() {
-  modal.classList.toggle("hidden");
-  modalbgOverlay.classList.toggle("hidden");
+  modal.classList.add("hidden");
+  modalbgOverlay.classList.add("hidden");
   if (!isMuted) {
     projectsSFX.play();
   }
@@ -388,7 +388,11 @@ function jumpCharacter(meshID) {
   }
 }
 
-function onClick() {
+function onClick(isTouchStart) {
+  if (!modal.classList.contains("hidden")) {
+    return;
+  }
+
   if (intersectObject !== "") {
     if (
       [
@@ -408,9 +412,11 @@ function onClick() {
         isCharacterReady = false;
       }
     } else {
-      showModal(intersectObject);
-      if (!isMuted) {
-        projectsSFX.play();
+      if (isTouchStart || (!isTouchStart && intersectObject)) {
+        showModal(intersectObject);
+        if (!isMuted) {
+          projectsSFX.play();
+        }
       }
     }
   }
