@@ -4,24 +4,51 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { Octree } from "three/addons/math/Octree.js";
 import { Capsule } from "three/addons/math/Capsule.js";
 
-//Audio
-const backgroundMusic = new Audio("./sfx/music.ogg");
-backgroundMusic.loop = true;
-backgroundMusic.volume = 0.3;
+//Audio with Howler.js
+const sounds = {
+  backgroundMusic: new Howl({
+    src: ["./sfx/music.ogg"],
+    loop: true,
+    volume: 0.3,
+    preload: true,
+  }),
 
-const projectsSFX = new Audio("./sfx/projects.ogg");
-projectsSFX.volume = 0.5;
+  projectsSFX: new Howl({
+    src: ["./sfx/projects.ogg"],
+    volume: 0.5,
+    preload: true,
+  }),
 
-const pokemonSFX = new Audio("./sfx/pokemon.ogg");
-pokemonSFX.volume = 0.5;
+  pokemonSFX: new Howl({
+    src: ["./sfx/pokemon.ogg"],
+    volume: 0.5,
+    preload: true,
+  }),
 
-const jumpSFX = new Audio("./sfx/jumpsfx.ogg");
-jumpSFX.volume = 1;
+  jumpSFX: new Howl({
+    src: ["./sfx/jumpsfx.ogg"],
+    volume: 1.0,
+    preload: true,
+  }),
+};
 
 let isMuted = false;
 
+function playSound(soundId) {
+  if (!isMuted && sounds[soundId]) {
+    sounds[soundId].play();
+  }
+}
+
+function stopSound(soundId) {
+  if (sounds[soundId]) {
+    sounds[soundId].stop();
+  }
+}
+
 //three.js setup
 const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xaec972);
 const canvas = document.getElementById("experience-canvas");
 const sizes = {
   width: window.innerWidth,
@@ -138,7 +165,7 @@ function hideModal() {
   modal.classList.add("hidden");
   modalbgOverlay.classList.add("hidden");
   if (!isMuted) {
-    projectsSFX.play();
+    playSound("projectsSFX");
   }
 }
 
@@ -199,8 +226,8 @@ enterButton.addEventListener("click", () => {
   });
 
   if (!isMuted) {
-    projectsSFX.play();
-    backgroundMusic.play();
+    playSound("projectsSFX");
+    playSound("backgroundMusic");
   }
 });
 
@@ -250,12 +277,12 @@ loader.load(
 // See: https://threejs.org/docs/?q=light#api/en/lights/AmbientLight
 const sun = new THREE.DirectionalLight(0xffffff);
 sun.castShadow = true;
-sun.position.set(280, 200, -30);
-sun.target.position.set(100, 0, 10);
+sun.position.set(280, 200, -80);
+sun.target.position.set(100, 0, -10);
 sun.shadow.mapSize.width = 4096;
 sun.shadow.mapSize.height = 4096;
 sun.shadow.camera.left = -150;
-sun.shadow.camera.right = 100;
+sun.shadow.camera.right = 300;
 sun.shadow.camera.top = 150;
 sun.shadow.camera.bottom = -100;
 sun.shadow.normalBias = 0.2;
@@ -406,7 +433,7 @@ function onClick(isTouchStart) {
     ) {
       if (isCharacterReady) {
         if (!isMuted) {
-          pokemonSFX.play();
+          playSound("pokemonSFX");
         }
         jumpCharacter(intersectObject);
         isCharacterReady = false;
@@ -415,7 +442,7 @@ function onClick(isTouchStart) {
       if (isTouchStart || (!isTouchStart && intersectObject)) {
         showModal(intersectObject);
         if (!isMuted) {
-          projectsSFX.play();
+          playSound("projectsSFX");
         }
       }
     }
@@ -569,7 +596,7 @@ function onKeyUp(event) {
 // Toggle Theme Function
 function toggleTheme() {
   if (!isMuted) {
-    projectsSFX.play();
+    playSound("projectsSFX");
   }
   const isDarkTheme = document.body.classList.contains("dark-theme");
   document.body.classList.toggle("dark-theme");
@@ -585,8 +612,8 @@ function toggleTheme() {
 
   gsap.to(light.color, {
     r: isDarkTheme ? 1.0 : 0.25,
-    g: isDarkTheme ? 1.0 : 0.41,
-    b: isDarkTheme ? 1.0 : 0.88,
+    g: isDarkTheme ? 1.0 : 0.31,
+    b: isDarkTheme ? 1.0 : 0.78,
     duration: 1,
     ease: "power2.inOut",
   });
@@ -615,18 +642,18 @@ function toggleTheme() {
 // Toggle Audio Function
 function toggleAudio() {
   if (!isMuted) {
-    projectsSFX.play();
+    playSound("projectsSFX");
   }
   if (firstIconTwo.style.display === "none") {
     firstIconTwo.style.display = "block";
     secondIconTwo.style.display = "none";
     isMuted = false;
-    backgroundMusic.play();
+    sounds.backgroundMusic.play();
   } else {
     firstIconTwo.style.display = "none";
     secondIconTwo.style.display = "block";
     isMuted = true;
-    backgroundMusic.pause();
+    sounds.backgroundMusic.pause();
   }
 }
 
@@ -693,7 +720,7 @@ function handleContinuousMovement() {
     !character.isMoving
   ) {
     if (!isMuted) {
-      jumpSFX.play();
+      playSound("jumpSFX");
     }
     if (pressedButtons.up) {
       playerVelocity.z += MOVE_SPEED;
