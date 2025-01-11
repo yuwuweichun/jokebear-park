@@ -17,3 +17,7 @@ This repo contains code of Bella Xu's Folio. It is a small recreation of Bella's
 - Switched event.key to event.code for different keyboard support.
 - Switched to continous movement using if statements for seamless movement.
 - Added loading screen button.
+
+# Inspo!!!
+- [Character](https://www.freepik.com/premium-photo/pixel-girl-surfing-voxel-art-surfboard-dolly-kei-style_165308006.htm)
+- [Crossy Road](https://crossyroad.fandom.com/wiki/Crossy_Road_Wiki)
