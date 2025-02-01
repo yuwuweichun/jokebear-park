@@ -169,6 +169,39 @@ function hideModal() {
   }
 }
 
+let touchHappenedModal = false;
+
+modalExitButton.addEventListener("touchend", (e) => {
+  touchHappenedModal = true;
+  e.preventDefault();
+  hideModal();
+});
+
+modalExitButton.addEventListener("click", (e) => {
+  if (touchHappenedModal) {
+    touchHappenedModal = false;
+    return;
+  }
+  e.preventDefault();
+  hideModal();
+});
+
+// Add same pattern for background overlay
+modalbgOverlay.addEventListener("touchend", (e) => {
+  touchHappenedModal = true;
+  e.preventDefault();
+  hideModal();
+});
+
+modalbgOverlay.addEventListener("click", (e) => {
+  if (touchHappenedModal) {
+    touchHappenedModal = false;
+    return;
+  }
+  e.preventDefault();
+  hideModal();
+});
+
 // Our Intersecting objects
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
@@ -416,6 +449,11 @@ function jumpCharacter(meshID) {
 }
 
 function onClick(isTouchStart) {
+  if (touchHappenedIntersect) {
+    touchHappenedIntersect = false;
+    return;
+  }
+
   if (!modal.classList.contains("hidden")) {
     return;
   }
@@ -454,7 +492,10 @@ function onMouseMove(event) {
   pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
 }
 
+let touchHappenedIntersect = false;
+
 function onTouchStart(event) {
+  touchHappenedIntersect = true;
   const touch = event.touches[0];
   updatePointer(touch);
   checkIntersection();
@@ -619,13 +660,13 @@ function toggleTheme() {
   });
 
   gsap.to(light, {
-    intensity: isDarkTheme ? 0.8 : 0.9,
+    intensity: isDarkTheme ? 0.8 : 0.8,
     duration: 1,
     ease: "power2.inOut",
   });
 
   gsap.to(sun, {
-    intensity: isDarkTheme ? 1 : 0.8,
+    intensity: isDarkTheme ? 0.9 : 0.75,
     duration: 1,
     ease: "power2.inOut",
   });
@@ -782,8 +823,7 @@ window.addEventListener("blur", () => {
 });
 
 // Adding Event Listeners (tbh could make some of these just themselves rather than seperating them, oh well)
-modalExitButton.addEventListener("click", hideModal);
-modalbgOverlay.addEventListener("click", hideModal);
+
 themeToggleButton.addEventListener("click", toggleTheme);
 audioToggleButton.addEventListener("click", toggleAudio);
 window.addEventListener("resize", onResize);
