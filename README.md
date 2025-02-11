@@ -6,7 +6,7 @@ This repo contains code of Bella Xu's Folio. It is a small recreation of Bella's
 
 ![Page screenshot](/media/og-image.webp?raw=true "Page screenshot")
 
-# Updates!!!
+## Updates!!!
 
 - Switched to touchmove for iOS mobile device support.
 - Added Music & SFX (credits):
@@ -18,6 +18,6 @@ This repo contains code of Bella Xu's Folio. It is a small recreation of Bella's
 - Switched to continous movement using if statements for seamless movement.
 - Added loading screen button.
 
-# ❤️ Inspo!!! ❤️
+## ❤️ Inspo!!! ❤️
 - [Character](https://www.freepik.com/premium-photo/pixel-girl-surfing-voxel-art-surfboard-dolly-kei-style_165308006.htm)
 - [Crossy Road](https://crossyroad.fandom.com/wiki/Crossy_Road_Wiki)
