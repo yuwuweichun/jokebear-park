@@ -1,4 +1,4 @@
-# Bella Xu's Folio
+# 💁🏻‍♀️ Bella Xu's Award-Winning Folio
 
 **[Live site](http://bellas-park.com/)**
 
@@ -8,6 +8,7 @@ This repo contains code of Bella Xu's Folio. It is a small recreation of Bella's
 
 # Updates!!!
 
+- Recently won [Special Kudos and Best UI/UX/Innovation awards](https://www.cssdesignawards.com/sites/bellas-park/46895/) from CSSDA!!!
 - Switched to touchmove for iOS mobile device support.
 - Added Music & SFX (credits):
   - [SFX1](https://tuna.voicemod.net/sound/70e8a476-80ba-4639-a6c4-f7f66265dab7)
