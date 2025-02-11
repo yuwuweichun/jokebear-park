@@ -32,6 +32,8 @@ const sounds = {
   }),
 };
 
+let touchHappened = false;
+
 let isMuted = false;
 
 function playSound(soundId) {
@@ -94,6 +96,7 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.7;
 
 // Some of our DOM elements, others are scattered in the file
+let isModalOpen = false;
 const modal = document.querySelector(".modal");
 const modalbgOverlay = document.querySelector(".modal-bg-overlay");
 const modalTitle = document.querySelector(".modal-title");
@@ -158,10 +161,12 @@ function showModal(id) {
     }
     modal.classList.remove("hidden");
     modalbgOverlay.classList.remove("hidden");
+    isModalOpen = true;
   }
 }
 
 function hideModal() {
+  isModalOpen = false;
   modal.classList.add("hidden");
   modalbgOverlay.classList.add("hidden");
   if (!isMuted) {
@@ -415,9 +420,23 @@ function jumpCharacter(meshID) {
   }
 }
 
-function onClick(isTouchStart) {
+function onClick() {
+  if (touchHappened) return;
+  handleInteraction();
+}
+
+function handleInteraction() {
   if (!modal.classList.contains("hidden")) {
     return;
+  }
+
+  raycaster.setFromCamera(pointer, camera);
+  const intersects = raycaster.intersectObjects(intersectObjects);
+
+  if (intersects.length > 0) {
+    intersectObject = intersects[0].object.parent.name;
+  } else {
+    intersectObject = "";
   }
 
   if (intersectObject !== "") {
@@ -439,7 +458,7 @@ function onClick(isTouchStart) {
         isCharacterReady = false;
       }
     } else {
-      if (isTouchStart || (!isTouchStart && intersectObject)) {
+      if (intersectObject) {
         showModal(intersectObject);
         if (!isMuted) {
           playSound("projectsSFX");
@@ -452,34 +471,15 @@ function onClick(isTouchStart) {
 function onMouseMove(event) {
   pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
   pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  touchHappened = false;
 }
 
-function onTouchStart(event) {
-  const touch = event.touches[0];
-  updatePointer(touch);
-  checkIntersection();
-}
+function onTouchEnd(event) {
+  pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+  pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-function onTouchMove(event) {
-  const touch = event.touches[0];
-  updatePointer(touch);
-}
-
-function updatePointer(touch) {
-  pointer.x = (touch.clientX / window.innerWidth) * 2 - 1;
-  pointer.y = -(touch.clientY / window.innerHeight) * 2 + 1;
-}
-
-function checkIntersection() {
-  raycaster.setFromCamera(pointer, camera);
-  const intersects = raycaster.intersectObjects(intersectObjects);
-
-  if (intersects.length > 0) {
-    intersectObject = intersects[0].object.parent.name;
-    onClick();
-  } else {
-    intersectObject = "";
-  }
+  touchHappened = true;
+  handleInteraction();
 }
 
 // Movement and Gameplay functions
@@ -787,10 +787,9 @@ modalbgOverlay.addEventListener("click", hideModal);
 themeToggleButton.addEventListener("click", toggleTheme);
 audioToggleButton.addEventListener("click", toggleAudio);
 window.addEventListener("resize", onResize);
-window.addEventListener("click", onClick);
+window.addEventListener("click", onClick, { passive: false });
 window.addEventListener("mousemove", onMouseMove);
-window.addEventListener("touchmove", onTouchMove);
-window.addEventListener("touchstart", onTouchStart);
+window.addEventListener("touchend", onTouchEnd, { passive: false });
 window.addEventListener("keydown", onKeyDown);
 window.addEventListener("keyup", onKeyUp);
 
