@@ -21,3 +21,5 @@ This repo contains code of Bella Xu's Folio. It is a small recreation of Bella's
 ## ❤️ Inspo!!! ❤️
 - [Character](https://www.freepik.com/premium-photo/pixel-girl-surfing-voxel-art-surfboard-dolly-kei-style_165308006.htm)
 - [Crossy Road](https://crossyroad.fandom.com/wiki/Crossy_Road_Wiki)
+- [Bruno Simon](https://bruno-simon.com/)
+
